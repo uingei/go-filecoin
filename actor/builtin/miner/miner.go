@@ -279,8 +279,12 @@ var minerExports = exec.Exports{
 		Return: []abi.Type{abi.BytesAmount},
 	},
 	"getProvingPeriod": &exec.FunctionSignature{
-		Params: []abi.Type{},
+		Params: nil,
 		Return: []abi.Type{abi.BlockHeight, abi.BlockHeight},
+	},
+	"getGenerationAttackThreshold": &exec.FunctionSignature{
+		Params: nil,
+		Return: []abi.Type{abi.BlockHeight},
 	},
 }
 
@@ -890,18 +894,22 @@ func (ma *Actor) burnFunds(ctx exec.VMContext, amount types.AttoFIL) error {
 // GetProvingPeriod gets the proving period in terms of block heights.
 //   returns: proving period start, proving period end
 //            error code, error
-func (ma *Actor) GetProvingPeriod(ctx exec.VMContext) (*types.BlockHeight, *types.BlockHeight, uint8, error) {
+func (ma *Actor) GetProvingPeriod(ctx exec.VMContext) (*types.BlockHeight, *types.BlockHeight, error) {
 	chunk, err := ctx.ReadStorage()
 	if err != nil {
-		return nil, nil, errors.CodeError(err), err
+		return nil, nil, err
 	}
 
 	var state State
 	if err := actor.UnmarshalStorage(chunk, &state); err != nil {
-		return nil, nil, errors.CodeError(err), err
+		return nil, nil, err
 	}
 
-	return provingPeriodStart(state), state.ProvingPeriodEnd, 0, nil
+	return provingPeriodStart(state), state.ProvingPeriodEnd, nil
+}
+
+func (ma *Actor) GetGenerationAttackThreshold(ctx exec.VMContext) *types.BlockHeight {
+	return types.NewBlockHeight(LargestSectorSizeProvingPeriodBlocks)
 }
 
 // getPoStChallengeSeed returns some chain randomness

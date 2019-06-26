@@ -363,6 +363,11 @@ func TestMinerGetProvingPeriod(t *testing.T) {
 	})
 }
 
+func TestMinerGetGenerationAttackThreshold(t *testing.T) {
+	tf.UnitTest(t)
+	assert.False(t, true) // stub intentionally set to fail
+}
+
 func updatePeerIdSuccess(ctx context.Context, t *testing.T, st state.Tree, vms vm.StorageMap, fromAddr address.Address, minerAddr address.Address, newPid peer.ID) {
 	updatePeerIdMsg := types.NewMessage(
 		fromAddr,
