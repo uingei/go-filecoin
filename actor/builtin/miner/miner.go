@@ -887,7 +887,9 @@ func (ma *Actor) burnFunds(ctx exec.VMContext, amount types.AttoFIL) error {
 	return err
 }
 
-// GetProvingPeriod returns the proving period start and proving period end
+// GetProvingPeriod gets the proving period in terms of block heights.
+//   returns: proving period start, proving period end
+//            error code, error
 func (ma *Actor) GetProvingPeriod(ctx exec.VMContext) (*types.BlockHeight, *types.BlockHeight, uint8, error) {
 	chunk, err := ctx.ReadStorage()
 	if err != nil {
