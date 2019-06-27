@@ -909,7 +909,7 @@ func (ma *Actor) GetProvingPeriod(ctx exec.VMContext) (*types.BlockHeight, *type
 }
 
 func (ma *Actor) GetGenerationAttackThreshold(ctx exec.VMContext) *types.BlockHeight {
-	return types.NewBlockHeight(LargestSectorSizeProvingPeriodBlocks)
+	return types.NewBlockHeight(LargestSectorGenerationAttackThresholdBlocks)
 }
 
 // getPoStChallengeSeed returns some chain randomness

@@ -365,7 +365,22 @@ func TestMinerGetProvingPeriod(t *testing.T) {
 
 func TestMinerGetGenerationAttackThreshold(t *testing.T) {
 	tf.UnitTest(t)
-	assert.False(t, true) // stub intentionally set to fail
+
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
+	st, vms := core.CreateStorages(ctx, t)
+
+	minerAddr := createTestMinerWith(types.NewAttoFILFromFIL(240), t, st, vms, address.TestAddress, th.RequireRandomPeerID(t))
+
+	// retrieve proving period
+	result := callQueryMethodSuccess("getGenerationAttackThreshold", ctx, t, st, vms, address.TestAddress, minerAddr)
+	abiValue, err := abi.Deserialize(result[0], abi.BlockHeight)
+	require.NoError(t, err)
+	gat, ok := abiValue.Val.(*types.BlockHeight)
+	require.True(t, ok)
+	assert.NotNil(t, gat)
+	assert.Equal(t, gat.String(), "100")
 }
 
 func updatePeerIdSuccess(ctx context.Context, t *testing.T, st state.Tree, vms vm.StorageMap, fromAddr address.Address, minerAddr address.Address, newPid peer.ID) {
