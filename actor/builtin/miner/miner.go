@@ -891,25 +891,24 @@ func (ma *Actor) burnFunds(ctx exec.VMContext, amount types.AttoFIL) error {
 	return err
 }
 
-// GetProvingPeriod gets the proving period in terms of block heights.
-//   returns: proving period start, proving period end
-//            error code, error
-func (ma *Actor) GetProvingPeriod(ctx exec.VMContext) (*types.BlockHeight, *types.BlockHeight, error) {
+// GetProvingPeriod returns the proving period start and proving period end
+func (ma *Actor) GetProvingPeriod(ctx exec.VMContext) (*types.BlockHeight, *types.BlockHeight, uint8, error) {
 	chunk, err := ctx.ReadStorage()
 	if err != nil {
-		return nil, nil, err
+		return nil, nil, errors.CodeError(err), err
 	}
 
 	var state State
 	if err := actor.UnmarshalStorage(chunk, &state); err != nil {
-		return nil, nil, err
+		return nil, nil, errors.CodeError(err), err
 	}
 
-	return provingPeriodStart(state), state.ProvingPeriodEnd, nil
+	return provingPeriodStart(state), state.ProvingPeriodEnd, 0, nil
 }
 
-func (ma *Actor) GetGenerationAttackThreshold(ctx exec.VMContext) *types.BlockHeight {
-	return types.NewBlockHeight(LargestSectorGenerationAttackThresholdBlocks)
+// GetGenerationAttackThreshold returns the generation attack threshold in blockheight
+func (ma *Actor) GetGenerationAttackThreshold(ctx exec.VMContext) (*types.BlockHeight, uint8, error) {
+	return types.NewBlockHeight(LargestSectorGenerationAttackThresholdBlocks), 0, nil
 }
 
 // getPoStChallengeSeed returns some chain randomness
