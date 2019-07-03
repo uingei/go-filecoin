@@ -212,25 +212,14 @@ func (ma *Actor) InitializeState(storage exec.Storage, initializerData interface
 var _ exec.ExecutableActor = (*Actor)(nil)
 
 var minerExports = exec.Exports{
+	// addAsk is not in the spec, but there's not yet another mechanism to discover asks.
 	"addAsk": &exec.FunctionSignature{
 		Params: []abi.Type{abi.AttoFIL, abi.Integer},
 		Return: []abi.Type{abi.Integer},
 	},
-	"getAsks": &exec.FunctionSignature{
-		Params: nil,
-		Return: []abi.Type{abi.UintArray},
-	},
-	"getAsk": &exec.FunctionSignature{
-		Params: []abi.Type{abi.Integer},
-		Return: []abi.Type{abi.Bytes},
-	},
 	"getOwner": &exec.FunctionSignature{
 		Params: nil,
 		Return: []abi.Type{abi.Address},
-	},
-	"getLastUsedSectorID": &exec.FunctionSignature{
-		Params: nil,
-		Return: []abi.Type{abi.SectorID},
 	},
 	"commitSector": &exec.FunctionSignature{
 		Params: []abi.Type{abi.SectorID, abi.Bytes, abi.Bytes, abi.Bytes, abi.PoRepProof},
@@ -260,9 +249,32 @@ var minerExports = exec.Exports{
 		Params: []abi.Type{abi.Address},
 		Return: []abi.Type{},
 	},
+	// verifyPieceInclusion is not in spec, but should be.
 	"verifyPieceInclusion": &exec.FunctionSignature{
 		Params: []abi.Type{abi.Bytes, abi.SectorID, abi.Bytes},
 		Return: []abi.Type{},
+	},
+	"getSectorSize": &exec.FunctionSignature{
+		Params: nil,
+		Return: []abi.Type{abi.BytesAmount},
+	},
+
+	// Non-exported methods below here.
+	// These methods are not part of the actor's protocol specification and should not be exported,
+	// but are because we lack a mechanism to invoke actor methods without going through the
+	// queryMessage infrastructure. These should be removed when we have another way of invoking
+	// them from worker code. https://github.com/filecoin-project/go-filecoin/issues/2973
+	"getAsks": &exec.FunctionSignature{
+		Params: nil,
+		Return: []abi.Type{abi.UintArray},
+	},
+	"getAsk": &exec.FunctionSignature{
+		Params: []abi.Type{abi.Integer},
+		Return: []abi.Type{abi.Bytes},
+	},
+	"getLastUsedSectorID": &exec.FunctionSignature{
+		Params: nil,
+		Return: []abi.Type{abi.SectorID},
 	},
 	"getSectorCommitments": &exec.FunctionSignature{
 		Params: nil,
@@ -271,10 +283,6 @@ var minerExports = exec.Exports{
 	"isBootstrapMiner": &exec.FunctionSignature{
 		Params: nil,
 		Return: []abi.Type{abi.Boolean},
-	},
-	"getSectorSize": &exec.FunctionSignature{
-		Params: nil,
-		Return: []abi.Type{abi.BytesAmount},
 	},
 	"getProvingPeriod": &exec.FunctionSignature{
 		Params: []abi.Type{},

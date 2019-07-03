@@ -35,9 +35,9 @@ type ProofReader interface {
 
 // ProofCalculator creates the proof-of-spacetime bytes.
 type ProofCalculator interface {
-	// CalculatePost computes a proof-of-spacetime for a list of sector ids and matching seeds.
+	// CalculatePoSt computes a proof-of-spacetime for a list of sector ids and matching seeds.
 	// It returns the Snark Proof for the PoSt and a list of sector ids that failed.
-	CalculatePost(sortedCommRs proofs.SortedCommRs, seed types.PoStChallengeSeed) ([]types.PoStProof, []uint64, error)
+	CalculatePoSt(sortedCommRs proofs.SortedCommRs, seed types.PoStChallengeSeed) ([]types.PoStProof, []uint64, error)
 }
 
 // Prover orchestrates the calculation and submission of a proof-of-spacetime.
@@ -88,7 +88,7 @@ func (p *Prover) CalculatePoSt(ctx context.Context, start, end *types.BlockHeigh
 	for i, input := range inputs {
 		commRs[i] = input.CommR
 	}
-	proofs, faults, err := p.calculator.CalculatePost(proofs.NewSortedCommRs(commRs...), seed)
+	proofs, faults, err := p.calculator.CalculatePoSt(proofs.NewSortedCommRs(commRs...), seed)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to calculate PoSt")
 	}
@@ -153,6 +153,7 @@ func (p *Prover) calculateFee(ctx context.Context, height *types.BlockHeight, en
 
 	// Note: the passage of time could cause the pledge collateral requirement to change before
 	// the proof message is actually mined. Consider adding a buffer.
+	// https://github.com/filecoin-project/go-filecoin/issues/3013
 	collateral, err := p.chain.MinerGetPledgeCollateralRequirement(ctx, p.actorAddress)
 	if err != nil {
 		return types.ZeroAttoFIL, errors.Errorf("Failed to check pledge collateral requirement for %s", p.actorAddress)

@@ -356,7 +356,7 @@ func (api *API) BitswapGetStats(ctx context.Context) (*bitswap.Stat, error) {
 	return api.bitswap.(*bitswap.Bitswap).Stat()
 }
 
-// CalculatePost calls the sector builder to compute a proof.
-func (api *API) CalculatePost(sortedCommRs proofs.SortedCommRs, seed types.PoStChallengeSeed) ([]types.PoStProof, []uint64, error) {
-	return api.proofs.CalculatePost(sortedCommRs, seed)
+// CalculatePoSt calls the sector builder to compute a proof.
+func (api *API) CalculatePoSt(sortedCommRs proofs.SortedCommRs, seed types.PoStChallengeSeed) ([]types.PoStProof, []uint64, error) {
+	return api.proofs.CalculatePoSt(sortedCommRs, seed)
 }

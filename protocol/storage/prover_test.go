@@ -158,6 +158,6 @@ func (f *fakeProverContext) WalletBalance(ctx context.Context, addr address.Addr
 	return types.ZeroAttoFIL, errors.New("no balance for worker")
 }
 
-func (f *fakeProverContext) CalculatePost(sortedCommRs proofs.SortedCommRs, seed types.PoStChallengeSeed) ([]types.PoStProof, []uint64, error) {
+func (f *fakeProverContext) CalculatePoSt(sortedCommRs proofs.SortedCommRs, seed types.PoStChallengeSeed) ([]types.PoStProof, []uint64, error) {
 	return f.proofs, f.faults, nil
 }

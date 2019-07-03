@@ -2,9 +2,10 @@ package miner_test
 
 import (
 	"context"
-	"github.com/filecoin-project/go-filecoin/exec"
 	"math/big"
 	"testing"
+
+	"github.com/filecoin-project/go-filecoin/exec"
 
 	"github.com/libp2p/go-libp2p-peer"
 	"github.com/stretchr/testify/assert"
@@ -62,8 +63,8 @@ func TestAskFunctions(t *testing.T) {
 	pdata = actor.MustConvertParams(big.NewInt(3453))
 	msg = types.NewMessage(address.TestAddress, minerAddr, 2, types.ZeroAttoFIL, "getAsk", pdata)
 	result, err = th.ApplyTestMessage(st, vms, msg, types.NewBlockHeight(2))
-	assert.Equal(t, Errors[ErrAskNotFound], result.ExecutionError)
 	assert.NoError(t, err)
+	assert.Equal(t, Errors[ErrAskNotFound], result.ExecutionError)
 
 	// make another ask!
 	pdata = actor.MustConvertParams(types.NewAttoFILFromFIL(110), big.NewInt(200))
@@ -246,7 +247,7 @@ func TestPeerIdGetterAndSetter(t *testing.T) {
 
 		// update peer ID
 		newPid := th.RequireRandomPeerID(t)
-		updatePeerIdSuccess(ctx, t, st, vms, address.TestAddress, minerAddr, newPid)
+		updatePeerIdSuccess(t, st, vms, address.TestAddress, minerAddr, newPid)
 
 		// retrieve peer ID
 		resultB := callQueryMethodSuccess("getPeerID", ctx, t, st, vms, address.TestAddress, minerAddr)
@@ -363,7 +364,7 @@ func TestMinerGetProvingPeriod(t *testing.T) {
 	})
 }
 
-func updatePeerIdSuccess(ctx context.Context, t *testing.T, st state.Tree, vms vm.StorageMap, fromAddr address.Address, minerAddr address.Address, newPid peer.ID) {
+func updatePeerIdSuccess(t *testing.T, st state.Tree, vms vm.StorageMap, fromAddr address.Address, minerAddr address.Address, newPid peer.ID) {
 	updatePeerIdMsg := types.NewMessage(
 		fromAddr,
 		minerAddr,

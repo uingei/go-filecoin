@@ -21,8 +21,8 @@ func NewProofs(deps sectorBuilderer) *Proofs {
 	return &Proofs{deps}
 }
 
-// CalculatePost calls the sector builder to compute a proof.
-func (p *Proofs) CalculatePost(sortedCommRs proofs.SortedCommRs, seed types.PoStChallengeSeed) ([]types.PoStProof, []uint64, error) {
+// CalculatePoSt calls the sector builder to compute a proof.
+func (p *Proofs) CalculatePoSt(sortedCommRs proofs.SortedCommRs, seed types.PoStChallengeSeed) ([]types.PoStProof, []uint64, error) {
 	req := sectorbuilder.GeneratePoStRequest{
 		SortedCommRs:  sortedCommRs,
 		ChallengeSeed: seed,
