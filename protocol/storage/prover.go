@@ -49,6 +49,7 @@ type PoStSubmission struct {
 	Proofs   []types.PoStProof
 	Fee      types.AttoFIL
 	GasLimit types.GasUnits
+	Faults   types.FaultSet
 }
 
 // NewProver constructs a new Prover.
@@ -82,7 +83,6 @@ func (sm *Prover) CalculatePoSt(ctx context.Context, start, end *types.BlockHeig
 	// Compute fees.
 	if len(faults) != 0 {
 		log.Warningf("some faults when generating PoSt: %v", faults)
-		// TODO: include faults in submission https://github.com/filecoin-project/go-filecoin/issues/2889
 	}
 
 	height, err := sm.chain.ChainHeight()
@@ -105,5 +105,6 @@ func (sm *Prover) CalculatePoSt(ctx context.Context, start, end *types.BlockHeig
 		Proofs:   proofs,
 		Fee:      types.ZeroAttoFIL,
 		GasLimit: types.NewGasUnits(submitPostGasLimit),
+		Faults:   types.NewFaultSet(faults),
 	}, nil
 }
